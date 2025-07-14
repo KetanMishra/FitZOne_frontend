@@ -77,6 +77,86 @@ const HealthcareAI = () => {
     
     const lowerQuery = query.toLowerCase();
     
+    // Medical condition check
+    const medicalKeywords = ['pain', 'injury', 'hurt', 'sick', 'disease', 'condition', 'symptom', 'medicine', 'medication', 'doctor', 'treatment', 'diagnosis'];
+    const hasMedicalQuery = medicalKeywords.some(keyword => lowerQuery.includes(keyword));
+    
+    if (hasMedicalQuery) {
+      return `⚠️ **Medical Disclaimer**: Hey! I don't have medical authority or license to provide medical advice. For any health conditions, symptoms, or medical concerns, please consult a qualified healthcare doctor or medical professional near you. 
+
+I can help with general fitness, nutrition, and wellness tips, but anything medical needs a real doctor's attention! 👨‍⚕️
+
+Is there anything about fitness, workouts, or nutrition I can help you with instead? 💪`;
+    }
+
+    // Age-wise recommendations check
+    const ageMatch = query.match(/(\d+)\s*(?:years?\s*old|age)/i);
+    let ageGroup = '';
+    let ageAdvice = '';
+    
+    if (ageMatch) {
+      const age = parseInt(ageMatch[1]);
+      if (age >= 13 && age <= 19) {
+        ageGroup = 'Teen (13-19)';
+        ageAdvice = `
+**🧒 Teen Nutrition Focus:**
+- **Growth Support**: Extra protein for development
+- **Energy Foods**: Complex carbs for active lifestyle
+- **Calcium Rich**: Milk, paneer, til for bone growth
+- **Avoid**: Junk food, excessive sugar
+
+**💪 Teen Workout Plan:**
+- Bodyweight exercises (push-ups, squats)
+- Sports activities (cricket, football, badminton)
+- Light weight training (with supervision)
+- Focus on form over heavy weights`;
+      } else if (age >= 20 && age <= 35) {
+        ageGroup = 'Young Adult (20-35)';
+        ageAdvice = `
+**🚀 Young Adult Nutrition:**
+- **Performance Focus**: High protein for muscle building
+- **Balanced Macros**: 30% protein, 40% carbs, 30% fats
+- **Pre/Post Workout**: Banana + protein shake
+- **Career Balance**: Meal prep for busy schedule
+
+**🏋️‍♂️ Young Adult Workout:**
+- Strength training 4-5x/week
+- HIIT for fat loss
+- Progressive overload
+- Mix of compound movements`;
+      } else if (age >= 36 && age <= 50) {
+        ageGroup = 'Middle Age (36-50)';
+        ageAdvice = `
+**⚖️ Middle Age Nutrition:**
+- **Metabolism Support**: Smaller, frequent meals
+- **Anti-inflammatory**: Turmeric, ginger, green tea
+- **Portion Control**: Mindful eating
+- **Hydration**: 3-4 liters water daily
+
+**🧘‍♂️ Middle Age Workout:**
+- Strength training 3x/week
+- Low-impact cardio
+- Flexibility and mobility work
+- Joint-friendly exercises`;
+      } else if (age >= 50) {
+        ageGroup = 'Senior (50+)';
+        ageAdvice = `
+**👴 Senior Nutrition:**
+- **Bone Health**: Calcium, Vitamin D rich foods
+- **Easy Digestion**: Soft dal, khichdi, fruits
+- **Heart Health**: Omega-3, nuts, fish
+- **Gentle Portions**: Smaller, nutrient-dense meals
+
+**🚶‍♂️ Senior Workout:**
+- Walking 30 minutes daily
+- Chair exercises
+- Gentle yoga and stretching
+- Balance and coordination work
+
+⚠️ **Important**: Please consult your doctor before starting any new exercise program.`;
+      }
+    }
+
     // BMI Calculator with height and weight
     if (lowerQuery.includes('bmi') || lowerQuery.includes('body mass index')) {
       // Extract height and weight from the query
@@ -227,7 +307,7 @@ const HealthcareAI = () => {
 **Focus:** Fat burning and muscle preservation`;
         } else {
           category = 'Obese';
-          recommendation = 'Consult a healthcare professional for a comprehensive weight loss plan.';
+          recommendation = 'I recommend consulting a healthcare professional for a comprehensive weight loss plan.';
           indianFoodPlan = `
 **🥒 Indian Therapeutic Food Plan:**
 
@@ -266,90 +346,98 @@ const HealthcareAI = () => {
 **⚠️ Please consult a doctor before starting any exercise program**`;
         }
         
-        return `📊 **Your BMI Calculation:**
+        let bmiResponse = `Hey! Let me calculate your BMI for you! 📊
+
+**Your BMI Results:**
 
 **Height:** ${height.toFixed(2)} meters
 **Weight:** ${weight.toFixed(1)} kg
 **BMI:** ${bmi.toFixed(1)}
-**Category:** ${category}
+**Category:** ${category} ${category === 'Normal Weight' ? '🎉' : category === 'Underweight' ? '📈' : '📉'}
 
-**Assessment:** ${recommendation}
+**What this means:** ${recommendation}
 
 ${indianFoodPlan}
 
 ${workoutPlan}
 
-**💧 Hydration:** Drink 8-10 glasses of water daily
-**😴 Sleep:** 7-8 hours of quality sleep
-**🧘‍♀️ Stress:** Practice meditation or yoga for mental health
+**💡 General Tips:**
+- 💧 **Stay Hydrated**: 8-10 glasses of water daily
+- 😴 **Good Sleep**: 7-8 hours for recovery
+- 🧘‍♀️ **Manage Stress**: Try meditation or yoga
+- 📱 **Track Progress**: Take weekly measurements
 
-**Note:** This is general guidance. For personalized plans, consult a nutritionist and fitness trainer! 🏥`;
+${ageAdvice}
+
+Hope this helps! Let me know if you want more specific advice! 😊`;
+
+        if (category === 'Obese') {
+          bmiResponse += `\n\n⚠️ **Medical Disclaimer**: For obesity management, please consult a qualified healthcare doctor or nutritionist near you for personalized medical guidance.`;
+        }
+
+        return bmiResponse;
       } else {
-        return `📊 **BMI Calculator:**
+        return `Hey! I'd love to help you calculate your BMI! 📊
 
-To calculate your BMI, please provide your height and weight in this format:
+Just tell me your height and weight like this:
 
 **Examples:**
 - "My height is 170 cm and weight is 65 kg"
 - "I am 5 feet 6 inches tall and weigh 60 kg"
 - "Height 1.75 meters, weight 70 kg"
 
-**BMI Categories:**
-- Underweight: Below 18.5
-- Normal weight: 18.5-24.9
-- Overweight: 25-29.9
-- Obese: 30 and above
+**What I'll give you:**
+✅ Your exact BMI calculation
+🍛 Personalized Indian food plan
+💪 Workout recommendations
+📊 Health category assessment
 
-I'll calculate your BMI and provide personalized Indian food plans and workout recommendations! 📏⚖️`;
+Ready when you are! 😊`;
       }
     }
     
     // Calorie Information
     if (lowerQuery.includes('calorie') || lowerQuery.includes('deficit') || lowerQuery.includes('surplus')) {
-      return `🔥 **Indian Diet Calorie Guide:**
+      return `Hey! Let me break down calories for you! 🔥
 
-**Daily Calorie Needs (Rough estimates):**
+**Daily Calorie Needs (General estimates):**
 - Sedentary women: 1,600-2,000 calories
 - Active women: 2,000-2,400 calories
 - Sedentary men: 2,000-2,500 calories
 - Active men: 2,500-3,000 calories
 
-**For Weight Loss:** Create a deficit of 500-750 calories/day (lose 0.5-0.75 kg/week)
-**For Weight Gain:** Create a surplus of 300-500 calories/day (gain 0.25-0.5 kg/week)
+**Weight Goals:**
+📉 **Weight Loss:** 500-750 calorie deficit/day (lose 0.5-0.75 kg/week)
+📈 **Weight Gain:** 300-500 calorie surplus/day (gain 0.25-0.5 kg/week)
 
-**High-Calorie Indian Foods:**
+**🍛 High-Calorie Indian Foods:**
 - Ghee (1 tbsp = 120 calories)
 - Almonds (10 pieces = 70 calories)
 - Paratha (1 medium = 300 calories)
 - Rice (1 cup cooked = 200 calories)
 - Dal (1 cup = 230 calories)
 
-**Low-Calorie Indian Foods:**
+**🥗 Low-Calorie Indian Foods:**
 - Cucumber (1 cup = 16 calories)
 - Tomato (1 medium = 22 calories)
 - Spinach (1 cup = 7 calories)
 - Buttermilk (1 glass = 60 calories)
 - Green tea (1 cup = 2 calories)
-- Nuts and seeds (almonds, walnuts)
-- Avocados
-- Olive oil
-- Quinoa
-- Sweet potatoes
 
-Would you like a personalized calorie calculation? 🍎`;
+Want me to create a personalized calorie plan for you? Just tell me your age, activity level, and goals! 😊`;
     }
     
     // Workout Information
     if (lowerQuery.includes('workout') || lowerQuery.includes('exercise') || lowerQuery.includes('training')) {
-      return `💪 **Indian Home Workout Plan:**
+      return `Awesome! Let me share some great workout ideas! 💪
 
-**Beginner Routine (3x/week):**
+**🏠 Desi Home Workout (Perfect for beginners!):**
 - 5-10 min warm-up
 - 20-30 min strength training
 - 15-20 min cardio
 - 5-10 min cool-down/stretching
 
-**Desi Exercises (No Equipment Needed):**
+**🇮🇳 Traditional Indian Exercises:**
 - Surya Namaskars: 5-10 rounds
 - Dand (Indian Push-ups): 3 sets x 5-15 reps
 - Baithak (Indian Squats): 3 sets x 10-20 reps
@@ -357,7 +445,7 @@ Would you like a personalized calorie calculation? 🍎`;
 - Pranayama: 10 minutes breathing exercises
 - Walking/Jogging in park: 30 minutes
 
-**Strength Training Basics:**
+**💪 Modern Strength Training:**
 - Squats: 3 sets x 8-12 reps
 - Push-ups: 3 sets x 5-15 reps
 - Lunges: 3 sets x 10 reps each leg
@@ -369,12 +457,14 @@ Would you like a personalized calorie calculation? 🍎`;
 - Swimming: 20-30 minutes
 - HIIT: 15-20 minutes
 
-**Recovery:** Rest 48 hours between training same muscle groups! 🏃‍♂️`;
+**⚡ Pro Tip:** Rest 48 hours between training same muscle groups!
+
+What's your fitness level? I can suggest something more specific! 😊`;
     }
     
     // Nutrition Information
     if (lowerQuery.includes('nutrition') || lowerQuery.includes('diet') || lowerQuery.includes('protein') || lowerQuery.includes('carbs')) {
-      return `🥗 **Indian Nutrition Guide:**
+      return `Great question! Let me break down nutrition for you! 🥗
 
 **Macronutrient Distribution:**
 - Protein: 20-30% of calories (0.8-1.2g per kg body weight)
@@ -397,7 +487,7 @@ Would you like a personalized calorie calculation? 🍎`;
 - Sweet potato, shakarkandi
 - Fruits: banana, apple, papaya
 
-**Indian Healthy Fats:**
+**🥜 Healthy Fats (Indian style):**
 - Ghee (in moderation)
 - Coconut oil, mustard oil
 - Nuts: almonds, walnuts
@@ -408,7 +498,7 @@ Would you like a personalized calorie calculation? 🍎`;
     
     // Weight Loss
     if (lowerQuery.includes('weight loss') || lowerQuery.includes('lose weight') || lowerQuery.includes('fat loss')) {
-      return `⚖️ **Weight Loss Strategy:**
+      return `Let's talk weight loss! Here's what actually works: ⚖️
 
 **The Formula:** Calories In < Calories Out
 
@@ -417,7 +507,7 @@ Would you like a personalized calorie calculation? 🍎`;
 2. **Combine diet + exercise:** 70% diet, 30% exercise
 3. **Aim for 0.5-1 kg loss per week**
 
-**Indian Weight Loss Foods:**
+**🍽️ Indian Weight Loss Foods:**
 - Green vegetables: palak, methi, lauki
 - Sprouts: moong, chana sprouts
 - Fruits: apple, papaya, guava
@@ -430,7 +520,7 @@ Would you like a personalized calorie calculation? 🍎`;
 - Refined foods: white rice, maida products
 - Sugary drinks: cold drinks, packaged juices
 
-**Diet Tips:**
+**💡 Smart Diet Tips:**
 - Eat protein with every meal
 - Fill half your plate with vegetables
 - Choose whole foods over processed
@@ -446,7 +536,9 @@ Would you like a personalized calorie calculation? 🍎`;
 - Body measurements
 - Progress photos
 - How clothes fit
+- Weekly weigh-ins (same time, same day)
 
+Remember: Slow and steady wins the race! 🐢
 Remember: Consistency beats perfection! 🎯`;
     }
     
@@ -454,6 +546,7 @@ Remember: Consistency beats perfection! 🎯`;
     return `🏥 **General Health Tips:**
 
 I'm here to help with your health and fitness journey! Here are some areas I can assist with:
+Hey there! I'm your friendly fitness buddy! 🤗 Here's how I can help:
 
 **Fitness & Exercise:**
 - Workout routines and planning
@@ -475,7 +568,13 @@ I'm here to help with your health and fitness journey! Here are some areas I can
 - Hydration guidelines
 - Stress management through fitness
 
-Feel free to ask me specific questions about any of these topics! What would you like to know more about? 💪🌟`;
+**🎯 Popular Questions:**
+- "Calculate my BMI" (just tell me height & weight!)
+- "Best workout for beginners"
+- "How many calories should I eat?"
+- "Indian diet plan for weight loss"
+
+What would you like to chat about? I'm here to help! 😊💪`;
   };
 
   const handleSendMessage = async () => {
