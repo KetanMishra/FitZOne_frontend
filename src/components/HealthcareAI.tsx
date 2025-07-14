@@ -77,11 +77,222 @@ const HealthcareAI = () => {
     
     const lowerQuery = query.toLowerCase();
     
-    // BMI Calculator
+    // BMI Calculator with height and weight
     if (lowerQuery.includes('bmi') || lowerQuery.includes('body mass index')) {
-      return `📊 **BMI Information:**
+      // Extract height and weight from the query
+      const heightMatch = query.match(/(\d+(?:\.\d+)?)\s*(?:cm|centimeter|meter|m|feet|ft|inch|in)/i);
+      const weightMatch = query.match(/(\d+(?:\.\d+)?)\s*(?:kg|kilogram|pound|lb|lbs)/i);
+      
+      if (heightMatch && weightMatch) {
+        let height = parseFloat(heightMatch[1]);
+        let weight = parseFloat(weightMatch[1]);
+        
+        // Convert height to meters if needed
+        if (lowerQuery.includes('cm') || lowerQuery.includes('centimeter')) {
+          height = height / 100;
+        } else if (lowerQuery.includes('feet') || lowerQuery.includes('ft')) {
+          height = height * 0.3048;
+        } else if (lowerQuery.includes('inch') || lowerQuery.includes('in')) {
+          height = height * 0.0254;
+        }
+        
+        // Convert weight to kg if needed
+        if (lowerQuery.includes('pound') || lowerQuery.includes('lb')) {
+          weight = weight * 0.453592;
+        }
+        
+        const bmi = weight / (height * height);
+        let category = '';
+        let recommendation = '';
+        let indianFoodPlan = '';
+        let workoutPlan = '';
+        
+        if (bmi < 18.5) {
+          category = 'Underweight';
+          recommendation = 'You need to gain weight in a healthy way.';
+          indianFoodPlan = `
+**🍛 Indian Weight Gain Food Plan:**
 
-BMI (Body Mass Index) is calculated as: **Weight (kg) ÷ Height (m)²**
+**Breakfast:**
+- Paratha with ghee + Curd
+- Banana milkshake with almonds
+- Poha with peanuts
+
+**Mid-Morning:**
+- Mixed nuts (almonds, walnuts, dates)
+- Lassi or buttermilk
+
+**Lunch:**
+- Rice + Dal + Sabzi + Roti
+- Paneer curry or chicken curry
+- Curd with cucumber
+
+**Evening Snack:**
+- Samosa or pakora (occasionally)
+- Fruit chaat with chaat masala
+- Coconut water
+
+**Dinner:**
+- Khichdi with ghee
+- Fish curry or egg curry
+- Warm milk with turmeric before bed`;
+          
+          workoutPlan = `
+**💪 Weight Gain Workout Plan:**
+
+**3-4 days/week:**
+- Squats: 3 sets x 8-10 reps
+- Push-ups: 3 sets x 5-8 reps
+- Lunges: 3 sets x 8 each leg
+- Planks: 3 sets x 30 seconds
+- Light cardio: 15-20 minutes
+
+**Focus:** Strength training to build muscle mass`;
+        } else if (bmi >= 18.5 && bmi < 25) {
+          category = 'Normal Weight';
+          recommendation = 'Great! Maintain your current weight with balanced nutrition.';
+          indianFoodPlan = `
+**🥗 Indian Maintenance Food Plan:**
+
+**Breakfast:**
+- Upma or oats with vegetables
+- Green tea or black coffee
+- 1 fruit (apple/banana)
+
+**Mid-Morning:**
+- Handful of nuts or sprouts
+
+**Lunch:**
+- 1 roti + brown rice (small portion)
+- Dal + vegetable curry
+- Salad with lemon
+
+**Evening Snack:**
+- Roasted chana or makhana
+- Green tea
+
+**Dinner:**
+- Light dal + 1 roti
+- Steamed vegetables
+- Curd (small bowl)`;
+          
+          workoutPlan = `
+**🏃‍♂️ Maintenance Workout Plan:**
+
+**5 days/week:**
+- Cardio: 30 minutes (walking/cycling)
+- Strength training: 3 days/week
+- Yoga: 2 days/week
+- Core exercises: Daily 10 minutes
+
+**Focus:** Overall fitness and health maintenance`;
+        } else if (bmi >= 25 && bmi < 30) {
+          category = 'Overweight';
+          recommendation = 'Focus on gradual weight loss through diet and exercise.';
+          indianFoodPlan = `
+**🥬 Indian Weight Loss Food Plan:**
+
+**Breakfast:**
+- Vegetable daliya or oats
+- Green tea
+- 1 small fruit
+
+**Mid-Morning:**
+- Cucumber or carrot sticks
+- Buttermilk (without sugar)
+
+**Lunch:**
+- 1 small roti + lots of vegetables
+- Dal (small portion)
+- Large salad with lemon
+
+**Evening Snack:**
+- Roasted makhana or green tea
+- Sprouts chaat
+
+**Dinner:**
+- Clear vegetable soup
+- Grilled paneer or chicken
+- Steamed vegetables`;
+          
+          workoutPlan = `
+**🔥 Weight Loss Workout Plan:**
+
+**6 days/week:**
+- Cardio: 45 minutes (brisk walking/cycling)
+- Strength training: 3 days/week
+- HIIT: 2 days/week (20 minutes)
+- Yoga: 1 day/week
+
+**Focus:** Fat burning and muscle preservation`;
+        } else {
+          category = 'Obese';
+          recommendation = 'Consult a healthcare professional for a comprehensive weight loss plan.';
+          indianFoodPlan = `
+**🥒 Indian Therapeutic Food Plan:**
+
+**Breakfast:**
+- Vegetable upma (small portion)
+- Green tea
+
+**Mid-Morning:**
+- Cucumber water or lemon water
+
+**Lunch:**
+- Large salad + 1 small roti
+- Clear dal
+- Steamed vegetables
+
+**Evening Snack:**
+- Green tea or herbal tea
+- Roasted chana (small portion)
+
+**Dinner:**
+- Clear soup
+- Boiled vegetables
+- Curd (fat-free)
+
+**⚠️ Please consult a nutritionist for personalized guidance**`;
+          
+          workoutPlan = `
+**🚶‍♂️ Gentle Start Workout Plan:**
+
+**Start with:**
+- Walking: 20-30 minutes daily
+- Light stretching: 10 minutes
+- Water aerobics (if available)
+- Gradually increase intensity
+
+**⚠️ Please consult a doctor before starting any exercise program**`;
+        }
+        
+        return `📊 **Your BMI Calculation:**
+
+**Height:** ${height.toFixed(2)} meters
+**Weight:** ${weight.toFixed(1)} kg
+**BMI:** ${bmi.toFixed(1)}
+**Category:** ${category}
+
+**Assessment:** ${recommendation}
+
+${indianFoodPlan}
+
+${workoutPlan}
+
+**💧 Hydration:** Drink 8-10 glasses of water daily
+**😴 Sleep:** 7-8 hours of quality sleep
+**🧘‍♀️ Stress:** Practice meditation or yoga for mental health
+
+**Note:** This is general guidance. For personalized plans, consult a nutritionist and fitness trainer! 🏥`;
+      } else {
+        return `📊 **BMI Calculator:**
+
+To calculate your BMI, please provide your height and weight in this format:
+
+**Examples:**
+- "My height is 170 cm and weight is 65 kg"
+- "I am 5 feet 6 inches tall and weigh 60 kg"
+- "Height 1.75 meters, weight 70 kg"
 
 **BMI Categories:**
 - Underweight: Below 18.5
@@ -89,12 +300,13 @@ BMI (Body Mass Index) is calculated as: **Weight (kg) ÷ Height (m)²**
 - Overweight: 25-29.9
 - Obese: 30 and above
 
-To calculate your BMI, please provide your height and weight, and I'll help you determine your BMI and provide personalized recommendations! 📏⚖️`;
+I'll calculate your BMI and provide personalized Indian food plans and workout recommendations! 📏⚖️`;
+      }
     }
     
     // Calorie Information
     if (lowerQuery.includes('calorie') || lowerQuery.includes('deficit') || lowerQuery.includes('surplus')) {
-      return `🔥 **Calorie Information:**
+      return `🔥 **Indian Diet Calorie Guide:**
 
 **Daily Calorie Needs (Rough estimates):**
 - Sedentary women: 1,600-2,000 calories
@@ -105,7 +317,19 @@ To calculate your BMI, please provide your height and weight, and I'll help you 
 **For Weight Loss:** Create a deficit of 500-750 calories/day (lose 0.5-0.75 kg/week)
 **For Weight Gain:** Create a surplus of 300-500 calories/day (gain 0.25-0.5 kg/week)
 
-**Calorie-Dense Healthy Foods:**
+**High-Calorie Indian Foods:**
+- Ghee (1 tbsp = 120 calories)
+- Almonds (10 pieces = 70 calories)
+- Paratha (1 medium = 300 calories)
+- Rice (1 cup cooked = 200 calories)
+- Dal (1 cup = 230 calories)
+
+**Low-Calorie Indian Foods:**
+- Cucumber (1 cup = 16 calories)
+- Tomato (1 medium = 22 calories)
+- Spinach (1 cup = 7 calories)
+- Buttermilk (1 glass = 60 calories)
+- Green tea (1 cup = 2 calories)
 - Nuts and seeds (almonds, walnuts)
 - Avocados
 - Olive oil
@@ -117,13 +341,21 @@ Would you like a personalized calorie calculation? 🍎`;
     
     // Workout Information
     if (lowerQuery.includes('workout') || lowerQuery.includes('exercise') || lowerQuery.includes('training')) {
-      return `💪 **Workout Recommendations:**
+      return `💪 **Indian Home Workout Plan:**
 
 **Beginner Routine (3x/week):**
 - 5-10 min warm-up
 - 20-30 min strength training
 - 15-20 min cardio
 - 5-10 min cool-down/stretching
+
+**Desi Exercises (No Equipment Needed):**
+- Surya Namaskars: 5-10 rounds
+- Dand (Indian Push-ups): 3 sets x 5-15 reps
+- Baithak (Indian Squats): 3 sets x 10-20 reps
+- Chakrasana (Wheel Pose): Hold for 30 seconds
+- Pranayama: 10 minutes breathing exercises
+- Walking/Jogging in park: 30 minutes
 
 **Strength Training Basics:**
 - Squats: 3 sets x 8-12 reps
@@ -142,7 +374,7 @@ Would you like a personalized calorie calculation? 🍎`;
     
     // Nutrition Information
     if (lowerQuery.includes('nutrition') || lowerQuery.includes('diet') || lowerQuery.includes('protein') || lowerQuery.includes('carbs')) {
-      return `🥗 **Nutrition Guidelines:**
+      return `🥗 **Indian Nutrition Guide:**
 
 **Macronutrient Distribution:**
 - Protein: 20-30% of calories (0.8-1.2g per kg body weight)
@@ -150,19 +382,26 @@ Would you like a personalized calorie calculation? 🍎`;
 - Fats: 20-35% of calories
 
 **High-Protein Foods:**
-- Chicken breast, fish, eggs
-- Greek yogurt, cottage cheese
-- Lentils, beans, quinoa
-- Nuts and seeds
+- Dal (moong, masoor, chana): 24g per cup
+- Paneer: 14g per 100g
+- Chicken: 25g per 100g
+- Fish: 20g per 100g
+- Eggs: 6g per egg
+- Curd: 11g per cup
+- Almonds: 6g per 28g
 
-**Complex Carbs:**
-- Oats, brown rice, quinoa
-- Sweet potatoes, whole grains
-- Fruits and vegetables
+**Indian Complex Carbs:**
+- Brown rice, quinoa
+- Roti (whole wheat)
+- Oats, daliya
+- Sweet potato, shakarkandi
+- Fruits: banana, apple, papaya
 
-**Healthy Fats:**
-- Avocados, olive oil
-- Nuts, seeds, fatty fish
+**Indian Healthy Fats:**
+- Ghee (in moderation)
+- Coconut oil, mustard oil
+- Nuts: almonds, walnuts
+- Seeds: flax, chia, sesame
 
 **Hydration:** Aim for 8-10 glasses of water daily! 💧`;
     }
@@ -177,6 +416,19 @@ Would you like a personalized calorie calculation? 🍎`;
 1. **Create a moderate deficit:** 500-750 calories/day
 2. **Combine diet + exercise:** 70% diet, 30% exercise
 3. **Aim for 0.5-1 kg loss per week**
+
+**Indian Weight Loss Foods:**
+- Green vegetables: palak, methi, lauki
+- Sprouts: moong, chana sprouts
+- Fruits: apple, papaya, guava
+- Spices: turmeric, ginger, cinnamon
+- Drinks: green tea, jeera water, lemon water
+
+**Avoid/Limit:**
+- Fried foods: samosa, pakora, puri
+- Sweets: laddu, barfi, gulab jamun
+- Refined foods: white rice, maida products
+- Sugary drinks: cold drinks, packaged juices
 
 **Diet Tips:**
 - Eat protein with every meal
