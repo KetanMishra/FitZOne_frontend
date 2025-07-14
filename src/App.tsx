@@ -13,6 +13,7 @@ import ProgramsPage from './components/ProgramsPage';
 import PurchasePage from './components/PurchasePage';
 import ServiceDetail from './components/ServiceDetail';
 import PricingDetail from './components/PricingDetail';
+import HealthcareAI from './components/HealthcareAI';
 
 const HomePage = () => (
   <>
@@ -38,6 +39,7 @@ function App() {
           <Route path="/pricing/:planId" element={<PricingDetail />} />
         </Routes>
         <Footer />
+        <HealthcareAI />
       </div>
     </Router>
   );
