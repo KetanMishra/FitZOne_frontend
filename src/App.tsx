@@ -14,6 +14,8 @@ import PurchasePage from './components/PurchasePage';
 import ServiceDetail from './components/ServiceDetail';
 import PricingDetail from './components/PricingDetail';
 import HealthcareAI from './components/HealthcareAI';
+import Cart from './components/Cart';
+import CheckoutPage from './components/CheckoutPage';
 
 const HomePage = () => (
   <>
@@ -37,8 +39,10 @@ function App() {
           <Route path="/purchase/:programId" element={<PurchasePage />} />
           <Route path="/service/:serviceId" element={<ServiceDetail />} />
           <Route path="/pricing/:planId" element={<PricingDetail />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Routes>
         <Footer />
+        <Cart />
         <HealthcareAI />
       </div>
     </Router>

@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Zap, Users, Target, Calendar, Clock, Flame, ArrowRight, Star, Sparkles } from 'lucide-react';
+import { Zap, Users, Target, Calendar, Clock, Flame, ArrowRight, Star, Sparkles, ShoppingCart, Eye } from 'lucide-react';
+import { useCartStore } from '../store/cartStore';
 
 const Programs = () => {
   const navigate = useNavigate();
+  const { addItem, toggleCart } = useCartStore();
 
   const programs = [
     {
@@ -80,6 +82,20 @@ const Programs = () => {
     }
   ];
 
+  const handleAddToCart = (program: any) => {
+    addItem({
+      id: program.id,
+      name: program.title,
+      price: 1875, // Base price in rupees
+      type: 'program',
+      image: program.image,
+      duration: program.duration,
+      level: program.level
+    });
+    
+    // Show success message
+    alert(`${program.title} added to cart!`);
+  };
   const handleJoinProgram = (programId: string) => {
     navigate(`/program/${programId}`);
     // Scroll to top after navigation
@@ -155,11 +171,21 @@ const Programs = () => {
                 </div>
                 
                 <button 
+              <div className="space-y-3">
+                <button 
                   onClick={() => handleJoinProgram(program.id)}
-                  className={`w-full bg-gradient-to-r ${program.gradient} text-white py-4 rounded-xl hover:shadow-lg transition-all duration-300 font-medium flex items-center justify-center space-x-2 group-hover:scale-105`}
+                  className={`w-full bg-gradient-to-r ${program.gradient} text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium flex items-center justify-center space-x-2`}
                 >
-                  <span>Join Program</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <Eye className="w-4 h-4" />
+                  <span>View Details</span>
+                </button>
+                
+                <button 
+                  onClick={() => handleAddToCart(program)}
+                  className="w-full border-2 border-orange-500 text-orange-500 py-3 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 font-medium flex items-center justify-center space-x-2"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  <span>Add to Cart</span>
                 </button>
               </div>
             </div>

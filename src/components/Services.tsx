@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Dumbbell, Users, Target, Heart, Clock, Trophy } from 'lucide-react';
+import { Dumbbell, Users, Target, Heart, Clock, Trophy, ShoppingCart, Eye } from 'lucide-react';
+import { useCartStore } from '../store/cartStore';
 
 const Services = () => {
   const navigate = useNavigate();
+  const { addItem } = useCartStore();
 
   const services = [
     {
@@ -62,6 +64,27 @@ const Services = () => {
     }
   ];
 
+  const handleAddToCart = (service: any) => {
+    const prices: { [key: string]: number } = {
+      'weight-training': 2500,
+      'cardio-fitness': 1800,
+      'group-classes': 1500,
+      'personal-training': 6000,
+      '24-7-access': 4999,
+      'nutrition-coaching': 3500
+    };
+    
+    addItem({
+      id: service.id,
+      name: service.title,
+      price: prices[service.id] || 2000,
+      type: 'service',
+      duration: '60 min',
+      level: 'All Levels'
+    });
+    
+    alert(`${service.title} added to cart!`);
+  };
   const handleLearnMore = (serviceId: string) => {
     navigate(`/service/${serviceId}`);
     // Scroll to top after navigation
@@ -120,12 +143,23 @@ const Services = () => {
               </ul>
 
               <div className="mt-6 pt-6 border-t border-gray-200 border-opacity-50">
-                <button 
-                  onClick={() => handleLearnMore(service.id)}
-                  className={`w-full bg-gradient-to-r ${service.gradient} text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
-                >
-                  Learn More
-                </button>
+                <div className="space-y-3">
+                  <button 
+                    onClick={() => handleLearnMore(service.id)}
+                    className={`w-full bg-gradient-to-r ${service.gradient} text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2`}
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>Learn More</span>
+                  </button>
+                  
+                  <button 
+                    onClick={() => handleAddToCart(service)}
+                    className="w-full border-2 border-orange-500 text-orange-500 py-3 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 font-medium flex items-center justify-center space-x-2"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    <span>Add to Cart</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))}

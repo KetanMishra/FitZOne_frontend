@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Star, Crown, Shield, Sparkles, Zap } from 'lucide-react';
+import { Check, Star, Crown, Shield, Sparkles, Zap, ShoppingCart, Eye } from 'lucide-react';
+import { useCartStore } from '../store/cartStore';
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const { addItem } = useCartStore();
 
   const plans = [
     {
@@ -68,6 +70,21 @@ const Pricing = () => {
     }
   ];
 
+  const handleAddToCart = (plan: any) => {
+    const price = parseInt(plan.price.replace(',', ''));
+    addItem({
+      id: `plan-${plan.name.toLowerCase()}`,
+      name: `${plan.name} Plan`,
+      price: price,
+      type: 'plan',
+      duration: plan.period,
+      level: plan.name,
+      originalPrice: plan.name === 'Premium' ? 5999 : plan.name === 'Elite' ? 9999 : 2999,
+      discount: plan.name === 'Premium' ? '25% off' : plan.name === 'Elite' ? '25% off' : '27% off'
+    });
+    
+    alert(`${plan.name} Plan added to cart!`);
+  };
   const getIcon = (planName: string) => {
     switch (planName) {
       case 'Basic':
@@ -146,15 +163,23 @@ const Pricing = () => {
                 ))}
               </ul>
               
-              <button 
-                onClick={() => navigate(`/pricing/${plan.name.toLowerCase()}`)}
-                className={`w-full py-3 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg bg-gradient-to-r ${plan.gradient} text-white hover:shadow-xl`}
-              >
-                <span className="flex items-center justify-center space-x-2">
-                  <span>Get Started</span>
-                  <Zap className="w-4 h-4" />
-                </span>
-              </button>
+              <div className="space-y-3">
+                <button 
+                  onClick={() => navigate(`/pricing/${plan.name.toLowerCase()}`)}
+                  className={`w-full py-3 rounded-xl font-bold transition-all duration-300 shadow-lg bg-gradient-to-r ${plan.gradient} text-white hover:shadow-xl flex items-center justify-center space-x-2`}
+                >
+                  <Eye className="w-4 h-4" />
+                  <span>View Details</span>
+                </button>
+                
+                <button 
+                  onClick={() => handleAddToCart(plan)}
+                  className="w-full py-3 rounded-xl font-bold transition-all duration-300 border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white flex items-center justify-center space-x-2"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  <span>Add to Cart</span>
+                </button>
+              </div>
               
               {plan.popular && (
                 <div className="mt-4 text-center">

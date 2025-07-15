@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^7.4.0",
     "lucide-react": "^0.344.0",
     "openai": "^5.9.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.6.3",
+    "stripe": "^18.3.0",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
