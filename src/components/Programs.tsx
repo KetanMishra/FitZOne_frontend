@@ -170,23 +170,23 @@ const Programs = () => {
                   ))}
                 </div>
                 
-                <button 
-              <div className="space-y-3">
-                <button 
-                  onClick={() => handleJoinProgram(program.id)}
-                  className={`w-full bg-gradient-to-r ${program.gradient} text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium flex items-center justify-center space-x-2`}
-                >
-                  <Eye className="w-4 h-4" />
-                  <span>View Details</span>
-                </button>
-                
-                <button 
-                  onClick={() => handleAddToCart(program)}
-                  className="w-full border-2 border-orange-500 text-orange-500 py-3 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 font-medium flex items-center justify-center space-x-2"
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                  <span>Add to Cart</span>
-                </button>
+                <div className="space-y-3">
+                  <button 
+                    onClick={() => handleJoinProgram(program.id)}
+                    className={`w-full bg-gradient-to-r ${program.gradient} text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium flex items-center justify-center space-x-2`}
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>View Details</span>
+                  </button>
+                  
+                  <button 
+                    onClick={() => handleAddToCart(program)}
+                    className="w-full border-2 border-orange-500 text-orange-500 py-3 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 font-medium flex items-center justify-center space-x-2"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    <span>Add to Cart</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))}
